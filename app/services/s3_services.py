@@ -1,7 +1,7 @@
 import boto3
 import os
 
-BUCKET = os.environ["S3_BUCKET"]
+BUCKET = os.environ.get('S3_BUCKET', 'test-bucket')
 s3 = boto3.client("s3")
 
 
