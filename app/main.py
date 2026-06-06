@@ -7,7 +7,7 @@ from app.routes import documents, analyze
 
 
 
-app = FastAPI(title="Document Assistant API")
+app = FastAPI(title="Document Assistant API", root_path="/default")
 
 app.include_router(documents.router)
 app.include_router(analyze.router)
