@@ -1,6 +1,7 @@
 from unittest.mock import patch, MagicMock
 from fastapi.testclient import TestClient
 from app.main import app
+from app.services.llm_service import DocumentAnalysis
 import io
 
 client = TestClient(app)
@@ -33,3 +34,28 @@ def test_delete_document(mock_s3):
     mock_s3.delete_object = MagicMock()
     response = client.delete("/documents/doc1.txt")
     assert response.status_code == 200
+
+
+@patch("app.services.llm_service.client")
+@patch("app.services.s3_services.s3")
+def test_analyze_document(mock_s3, mock_llm):
+    mock_s3.get_object.return_value = {
+        "Body": MagicMock(read=lambda: b"Reunion del equipo. Revisar presupuesto Q3.")
+    }
+
+    mock_result = DocumentAnalysis(
+        summary="Reunion de equipo sobre presupuesto Q3",
+        key_points=["Revisar presupuesto", "Definir objetivos Q3"],
+        next_actions=["Enviar informe", "Agendar seguimiento"],
+    )
+    mock_llm.beta.chat.completions.parse.return_value = MagicMock(
+        choices=[MagicMock(message=MagicMock(parsed=mock_result))]
+    )
+
+    response = client.post("/documents/notes.txt/analyze")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["key"] == "notes.txt"
+    assert data["summary"] == "Reunion de equipo sobre presupuesto Q3"
+    assert len(data["key_points"]) == 2
+    assert len(data["next_actions"]) == 2
