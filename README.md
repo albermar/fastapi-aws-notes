@@ -1,7 +1,8 @@
 # Document Assistant API
 
-Serverless REST API for document management and LLM-powered analysis.
-Built with FastAPI + Mangum, deployed on AWS Lambda via a CI/CD pipeline with GitHub Actions.
+Upload any text document and let the API act as your assistant: it stores it, reads it, and on demand extracts a summary, the key points, and the next actions to take — structured and ready to consume.
+
+Built with **FastAPI** and deployed serverless on **AWS Lambda** + **API Gateway**, with documents stored in **S3** and analysis powered by **OpenAI**. Fully automated CI/CD via **GitHub Actions** — tests gate every deploy.
 
 **Live API:** `https://zmkujfdrp3.execute-api.eu-north-1.amazonaws.com/default`
 
@@ -72,7 +73,6 @@ curl -X DELETE $BASE/documents/notes.txt
 - **Runtime:** Python 3.14, FastAPI, Mangum
 - **Cloud:** AWS Lambda, S3, API Gateway, IAM
 - **LLM:** OpenAI gpt-4o-mini with Pydantic structured output
-- **Storage:** Amazon S3 via boto3
 - **CI/CD:** GitHub Actions — pytest (mocked AWS) gates every deploy
 - **Infrastructure:** Serverless, zero-maintenance
 
